@@ -3,18 +3,15 @@ service: api-comentario
 
 provider:
   name: aws
-  # 1) Agrego región (puedes cambiar 'us-east-1' por la que uses)
   region: ${opt:region, 'us-east-1'}
   runtime: python3.13
   memorySize: 1024
   timeout: 30
   iam:
-    # 3) Usas tu rol existente
     role: arn:aws:iam::254780740814:role/LabRole
   environment:
     TABLE_NAME: ${sls:stage}-t_comentarios
-    # 2) Nueva variable para el bucket
-    BUCKET_NAME: s11ingest-${sls:stage}
+    BUCKET_NAME: s11ingest2-${sls:stage}    # ← ahora lleva “2”
 
 functions:
   crear:
@@ -44,8 +41,7 @@ resources:
             KeyType: RANGE
         BillingMode: PAY_PER_REQUEST
 
-    # 3) Recurso para crear el bucket de ingesta por stage
     BucketIngesta:
       Type: AWS::S3::Bucket
       Properties:
-        BucketName: ${self:provider.environment.BUCKET_NAME}
+        BucketName: ${self:provider.environment.BUCKET_NAME}   # ahora “s11ingest2-dev” por ejemplo
